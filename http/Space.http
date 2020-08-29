@@ -1,0 +1,45 @@
+POST http://localhost:8000/spaces
+Content-Type: application/json
+
+{
+    "name": "space name",
+    "owner": "space owner"
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 201, "status not 201");
+  client.assert(response.body.name === 'space name', "bad name");
+  client.assert(response.body.owner === 'space owner', "bad owner");
+});
+%}
+
+###
+
+POST http://localhost:8000/spaces/1/messages
+Content-Type: application/json
+
+{
+    "author": "message author",
+    "message": "the message"
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 201, "status not 201");
+  client.assert(response.body.author === 'message author', "bad owner");
+  client.assert(response.body.text === 'the message', "bad name");
+});
+%}
+
+###
+
+GET http://localhost:8000/spaces/1/messages/1
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "status not 200");
+  client.assert(response.body.author === 'message author', "bad owner");
+  client.assert(response.body.text === 'the message', "bad name");
+});
+%}
