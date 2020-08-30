@@ -4,6 +4,9 @@ namespace App\Controller\Input;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @Assert\Expression("this.author == this.subject", message="author must match authenticated user")
+ */
 class PostMessageInput
 {
     /**
@@ -17,4 +20,6 @@ class PostMessageInput
      * @Assert\NotBlank()
      */
     public ?string $author;
+
+    public ?string $subject;
 }

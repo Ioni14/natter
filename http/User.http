@@ -1,0 +1,27 @@
+POST http://localhost:8000/users
+Content-Type: application/json
+Accept: application/json
+
+{
+    "username": "toto",
+    "password": "password"
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 201, "status not 201");
+  client.assert(response.body.username === 'toto', "bad username");
+});
+%}
+
+###
+
+POST http://localhost:8000/users
+Content-Type: application/json
+Accept: application/json
+Authorization: Basic dG90bzpwYXNzd29yZA==
+
+{
+}
+
+###

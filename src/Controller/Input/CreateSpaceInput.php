@@ -4,6 +4,9 @@ namespace App\Controller\Input;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @Assert\Expression("this.owner == this.subject", message="owner must match authenticated user")
+ */
 class CreateSpaceInput
 {
     /**
@@ -17,4 +20,6 @@ class CreateSpaceInput
      * @Assert\NotBlank()
      */
     public ?string $owner;
+
+    public ?string $subject;
 }

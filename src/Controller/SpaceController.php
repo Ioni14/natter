@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -26,19 +27,22 @@ class SpaceController
     private EntityManagerInterface $entityManager;
     private SpaceRepository $spaceRepository;
     private MessageRepository $messageRepository;
+    private Security $security;
 
     public function __construct(
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         EntityManagerInterface $entityManager,
         SpaceRepository $spaceRepository,
-        MessageRepository $messageRepository
+        MessageRepository $messageRepository,
+        Security $security
     ) {
         $this->serializer = $serializer;
         $this->validator = $validator;
         $this->entityManager = $entityManager;
         $this->spaceRepository = $spaceRepository;
         $this->messageRepository = $messageRepository;
+        $this->security = $security;
     }
 
     /**
@@ -46,9 +50,12 @@ class SpaceController
      */
     public function createSpace(Request $request): Response
     {
+        $user = $this->security->getUser();
+
         try {
             /** @var CreateSpaceInput $input */
             $input = $this->serializer->deserialize($request->getContent(), CreateSpaceInput::class, $request->getContentType());
+            $input->subject = $user !== null ? $user->getUsername() : null;
         } catch (NotEncodableValueException $e) {
             throw new UnsupportedMediaTypeHttpException();
         }
@@ -78,9 +85,12 @@ class SpaceController
             throw new NotFoundHttpException();
         }
 
+        $user = $this->security->getUser();
+
         try {
             /** @var PostMessageInput $input */
             $input = $this->serializer->deserialize($request->getContent(), PostMessageInput::class, $request->getContentType());
+            $input->subject = $user !== null ? $user->getUsername() : null;
         } catch (NotEncodableValueException $e) {
             throw new UnsupportedMediaTypeHttpException();
         }

@@ -1,6 +1,7 @@
 POST http://localhost:8000/spaces
 Content-Type: application/json
 Accept: application/json
+Authorization: Basic dG90bzpwYXNzd29yZA==
 
 {
     "name": "space name",
@@ -17,9 +18,29 @@ client.test("Request executed successfully", function() {
 
 ###
 
+POST http://localhost:8000/spaces
+Content-Type: application/json
+Accept: application/json
+Authorization: Basic dG90bzpwYXNzd29yZA==
+
+{
+    "name": "space name",
+    "owner": "space owner"
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 400, "status not 201");
+  client.assert(response.body.violations[0].title === 'owner must match authenticated user', "status not 201");
+});
+%}
+
+###
+
 POST http://localhost:8000/spaces/1/messages
 Content-Type: application/json
 Accept: application/json
+Authorization: Basic dG90bzpwYXNzd29yZA==
 
 {
     "author": "message author",
@@ -38,6 +59,7 @@ client.test("Request executed successfully", function() {
 
 GET http://localhost:8000/spaces/1/messages/1
 Accept: application/json
+Authorization: Basic dG90bzpwYXNzd29yZA==
 
 > {%
 client.test("Request executed successfully", function() {
@@ -52,6 +74,7 @@ client.test("Request executed successfully", function() {
 POST http://localhost:8000/spaces
 Content-Type: application/json
 Accept: application/json
+Authorization: Basic dG90bzpwYXNzd29yZA==
 
 {
     "name": "very long name very long name very long name very long name very long name very long name"
