@@ -1,5 +1,6 @@
 POST http://localhost:8000/spaces
 Content-Type: application/json
+Accept: application/json
 
 {
     "name": "space name",
@@ -18,6 +19,7 @@ client.test("Request executed successfully", function() {
 
 POST http://localhost:8000/spaces/1/messages
 Content-Type: application/json
+Accept: application/json
 
 {
     "author": "message author",
@@ -35,11 +37,28 @@ client.test("Request executed successfully", function() {
 ###
 
 GET http://localhost:8000/spaces/1/messages/1
+Accept: application/json
 
 > {%
 client.test("Request executed successfully", function() {
   client.assert(response.status === 200, "status not 200");
   client.assert(response.body.author === 'message author', "bad owner");
   client.assert(response.body.text === 'the message', "bad name");
+});
+%}
+
+###
+
+POST http://localhost:8000/spaces
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "very long name very long name very long name very long name very long name very long name"
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 400, "status not 400");
 });
 %}

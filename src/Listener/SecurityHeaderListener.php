@@ -14,12 +14,11 @@ class SecurityHeaderListener
 
         $response = $event->getResponse();
         $response->headers->add([
+            "Server" => "",
             "X-Content-Type-Options" => "nosniff",
             "X-Frame-Options" => "DENY",
-            "X-XSS-Protection" => "0",
-            "Cache-Control" => "no-store",
+            "X-XSS-Protection" => "1; mode=block",
             "Content-Security-Policy" => "default-src 'none'; frame-ancestors 'none'; sandbox",
-            "Server" => "",
         ]);
     }
 }

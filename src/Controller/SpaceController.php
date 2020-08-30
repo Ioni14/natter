@@ -13,8 +13,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -45,8 +46,12 @@ class SpaceController
      */
     public function createSpace(Request $request): Response
     {
-        /** @var CreateSpaceInput $input */
-        $input = $this->serializer->deserialize($request->getContent(), CreateSpaceInput::class, $request->getContentType());
+        try {
+            /** @var CreateSpaceInput $input */
+            $input = $this->serializer->deserialize($request->getContent(), CreateSpaceInput::class, $request->getContentType());
+        } catch (NotEncodableValueException $e) {
+            throw new UnsupportedMediaTypeHttpException();
+        }
         $errors = $this->validator->validate($input);
         if ($errors->count() > 0) {
             return new JsonResponse($this->serializer->serialize($errors, 'json'), 400, [], true);
@@ -57,7 +62,8 @@ class SpaceController
         $this->entityManager->flush();
 
         return new JsonResponse($this->serializer->serialize($space, 'json', ['groups' => 'read']), 201, [
-            'Location' => '/spaces/'.$space->getId(),
+            'Location' => '/spaces/' . $space->getId(),
+            'Content-Type' => 'application/json;charset=utf-8',
         ], true);
     }
 
@@ -72,8 +78,12 @@ class SpaceController
             throw new NotFoundHttpException();
         }
 
-        /** @var PostMessageInput $input */
-        $input = $this->serializer->deserialize($request->getContent(), PostMessageInput::class, $request->getContentType());
+        try {
+            /** @var PostMessageInput $input */
+            $input = $this->serializer->deserialize($request->getContent(), PostMessageInput::class, $request->getContentType());
+        } catch (NotEncodableValueException $e) {
+            throw new UnsupportedMediaTypeHttpException();
+        }
         $errors = $this->validator->validate($input);
         if ($errors->count() > 0) {
             return new JsonResponse($this->serializer->serialize($errors, 'json'), 400, [], true);
@@ -84,7 +94,8 @@ class SpaceController
         $this->entityManager->flush();
 
         return new JsonResponse($this->serializer->serialize($message, 'json', ['groups' => 'read']), 201, [
-            'Location' => '/spaces/'.$space->getId().'/'.$message->getId(),
+            'Location' => '/spaces/' . $space->getId() . '/' . $message->getId(),
+            'Content-Type' => 'application/json;charset=utf-8',
         ], true);
     }
 
@@ -98,7 +109,9 @@ class SpaceController
             throw new NotFoundHttpException();
         }
 
-        return new JsonResponse($this->serializer->serialize($message, 'json', ['groups' => 'read']), 200, [], true);
+        return new JsonResponse($this->serializer->serialize($message, 'json', ['groups' => 'read']), 200, [
+            'Content-Type' => 'application/json;charset=utf-8',
+        ], true);
     }
 
     /**
@@ -107,7 +120,7 @@ class SpaceController
     public function findMessages(Request $request, string $spaceId): Response
     {
         try {
-            $since = new \DateTimeImmutable($request->query->get('since'));
+            $since = new \DateTimeImmutable($request->query->get('since', '-1 day'));
         } catch (\Exception $e) {
             $since = new \DateTimeImmutable('-1 day');
         }
@@ -121,6 +134,8 @@ class SpaceController
             ->getQuery()
             ->getResult();
 
-        return new JsonResponse($this->serializer->serialize($messages, 'json', ['groups' => 'read']), 200, [], true);
+        return new JsonResponse($this->serializer->serialize($messages, 'json', ['groups' => 'read']), 200, [
+            'Content-Type' => 'application/json;charset=utf-8',
+        ], true);
     }
 }
