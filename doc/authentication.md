@@ -26,3 +26,6 @@ Le sel est une valeur aléatoire qui est mixée au mot de passe quand il est has
 Il permet d'avoir un hash toujours différent même avec un mot de passe identique. Cela contre les Rainbow-tables qui permet de retrouver facilement des mots de passe à partir des hashs communs.
 
 
+## Session cookie Auth
+
+

@@ -18,3 +18,5 @@ services:
     App\Listener\SecurityHeaderListener:
         tags:
             - { name: 'kernel.event_listener' }
+
+    App\Security\Token\TokenStore: '@App\Security\Token\CookieTokenStore'

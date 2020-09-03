@@ -1,0 +1,11 @@
+POST http://localhost:8000/sessions
+Accept: application/json
+Authorization: Basic dG90bzpwYXNzd29yZA==
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "status not 200");
+});
+%}
+
+###

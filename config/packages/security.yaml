@@ -11,14 +11,17 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
+        api:
             lazy: true
             provider: user_entity
             anonymous: true
             stateless: true
             guard:
+                entry_point: App\Security\Guard\BasicGuardAuthenticator
                 authenticators:
                     - App\Security\Guard\BasicGuardAuthenticator
+                    - App\Security\Guard\TokenGuardAuthenticator
     access_control:
+        - { path: '^/$', roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: '^/users', roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: '^/', roles: IS_AUTHENTICATED_FULLY }

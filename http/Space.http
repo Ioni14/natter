@@ -85,3 +85,22 @@ client.test("Request executed successfully", function() {
   client.assert(response.status === 400, "status not 400");
 });
 %}
+
+###
+
+# Create a Space with token-based session-cookie auth
+POST http://localhost:8000/spaces
+Content-Type: application/json
+Accept: application/json
+Cookie: PHPSESSID=pv92kk6je5a58j884it4m49s44
+
+{
+    "name": "space name",
+    "owner": "toto"
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 201, "status not 201");
+});
+%}

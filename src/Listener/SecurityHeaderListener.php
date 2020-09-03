@@ -18,7 +18,7 @@ class SecurityHeaderListener
             "X-Content-Type-Options" => "nosniff",
             "X-Frame-Options" => "DENY",
             "X-XSS-Protection" => "1; mode=block",
-            "Content-Security-Policy" => "default-src 'none'; frame-ancestors 'none'; sandbox",
+//            "Content-Security-Policy" => "script-src 'unsafe-inline'; style-src 'unsafe-inline'; default-src 'none'; frame-ancestors 'none'; sandbox",
         ]);
     }
 }
