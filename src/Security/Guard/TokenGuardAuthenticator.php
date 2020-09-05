@@ -24,21 +24,23 @@ class TokenGuardAuthenticator extends AbstractGuardAuthenticator
 
     public function supports(Request $request): bool
     {
-        dump($request->headers->all());
-        return $this->tokenStore->read(null) !== null;
+        return $request->headers->has('X-CSRF-Token');
     }
 
     public function getCredentials(Request $request): array
     {
-        $token = $this->tokenStore->read(null);
+        $token = $this->tokenStore->read($request->headers->get('X-CSRF-Token'));
 
         return ['token' => $token];
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider): ?UserInterface
     {
-        /** @var Token $token */
+        /** @var Token|null $token */
         $token = $credentials['token'];
+        if ($token === null) {
+            throw new AuthenticationException('Bad token.');
+        }
         if (new \DateTimeImmutable() >= $token->expireAt) {
             throw new AuthenticationException('Token has expired.');
         }

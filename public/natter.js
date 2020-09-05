@@ -2,28 +2,40 @@
     const baseUrl = '';//'http://localhost:8000';
 
     function createSpace(name, owner) {
-        const payload = {
-            name,
-            owner,
-        };
+        let data = {name: name, owner: owner};
+        let csrfToken = getCookie('csrfToken');
 
-        fetch(`${baseUrl}/spaces`, {
+        fetch(baseUrl + '/spaces', {
             method: 'POST',
             credentials: 'include',
-            body: JSON.stringify(payload),
+            body: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json',
-            },
+                'X-CSRF-Token': csrfToken
+            }
         })
             .then(response => {
                 if (response.ok) {
                     return response.json();
+                } else if (response.status === 401) {
+                    window.location.replace('/login.html');
                 } else {
                     throw Error(response.statusText);
                 }
             })
             .then(json => console.log('Created space: ', json.name))
             .catch(error => console.error('Error: ', error));
+    }
+
+    function getCookie(cookieName) {
+        const cookieValue = document.cookie.split(';')
+            .map(item => item.split('=')
+            .map(x => decodeURIComponent(x.trim())))
+            .filter(item => item[0] === cookieName)[0];
+
+        if (cookieValue) {
+            return cookieValue[1];
+        }
     }
 
     function processFormSubmit(e) {

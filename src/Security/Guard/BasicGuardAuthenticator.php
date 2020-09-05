@@ -69,7 +69,7 @@ class BasicGuardAuthenticator extends AbstractGuardAuthenticator
     public function start(Request $request, AuthenticationException $authException = null)
     {
         return new JsonResponse(['error' => 'Auth required'], 401, [
-            'WWW-Authenticate' => 'Basic realm="auth required"',
+//            'WWW-Authenticate' => 'Basic realm="auth required"', // don't want the ugly login box
         ]);
     }
 }

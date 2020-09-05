@@ -1,5 +1,4 @@
 # Auth with HTTP-Basic and retrieve Token cookie session for other requests auth.
-// @no-cookie-jar
 POST http://localhost:8000/sessions
 Accept: application/json
 Authorization: Basic toto password
@@ -14,11 +13,10 @@ client.global.set("session_cookie_token", response.body.token_id);
 ###
 
 # Create a Space with token-based session-cookie auth
-// @no-cookie-jar
 POST http://localhost:8000/spaces
 Content-Type: application/json
 Accept: application/json
-Cookie: PHPSESSID={{session_cookie_token}}
+X-CSRF-Token: {{session_cookie_token}}toto
 
 {
     "name": "space name",

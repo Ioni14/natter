@@ -24,13 +24,16 @@ class CookieTokenStore implements TokenStore
         $this->session->set('expiry', $token->expireAt);
         $this->session->set('attrs', $token->attributes);
 
-        return $this->session->getId();
+        return hash('sha256', $this->session->getId());
     }
 
     public function read(?string $tokenId): ?Token
     {
-        dump($this->session->all());
         if (!$this->session->has('username') || !$this->session->has('expiry')) {
+            return null;
+        }
+
+        if (!hash_equals(hash('sha256', $this->session->getId()), $tokenId)) {
             return null;
         }
 

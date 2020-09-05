@@ -19,8 +19,16 @@ class NatterController
     /**
      * @Route("/", methods={"GET"})
      */
-    public function __invoke(Request $request): Response
+    public function home(Request $request): Response
     {
         return new Response($this->twig->render('natter.html.twig'));
+    }
+
+    /**
+     * @Route("/login", methods={"GET"})
+     */
+    public function login(Request $request): Response
+    {
+        return new Response($this->twig->render('login.html.twig'));
     }
 }
